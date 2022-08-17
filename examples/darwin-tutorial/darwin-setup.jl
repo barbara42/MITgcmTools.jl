@@ -1,10 +1,3 @@
-# let
-#     import Pkg
-#     Pkg.activate(".")
-# 	# CHANGE ME - put correct path in 
-#     Pkg.add(path="/Users/birdy/Documents/eaps_research/julia stuff/MITgcmTools.jl")
-# end
-
 begin
 	using Markdown
 	using InteractiveUtils
@@ -18,7 +11,7 @@ begin
 	# create config
 	config_name = "darwin-single-box"
 	# config_id = "conservation-test-" * string(UUIDs.uuid4())
-	config_id = "nitrogen_fixers"
+	config_id = "spotcheck-6-longest"
 	#folder = "/Users/birdy/Documents/eaps_research/darwin3/verification/darwin-single-box/run"
     folder = joinpath(MITgcm_path[1], "verification", config_name, "run")
 	config_obj = MITgcm_config(configuration=config_name, ID=config_id, folder=folder)

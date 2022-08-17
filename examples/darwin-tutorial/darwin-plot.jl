@@ -18,9 +18,9 @@ pred_2 = "f9135074-dd36-46e8-a46c-d047b127b9b1"
 # copy and paste in the correct config_id
 # (from the output of darwin-setup)
 ##################
-config_id = "nitrogen_fixers" # CHANGE ME
+config_id = "spotcheck-6-longest" # CHANGE ME
 data_folders = glob("ecco_gud*")
-data_folder = "ecco_gud_20220809_0001" # CHANGE ME
+data_folder = "ecco_gud_20220812_0001" # CHANGE ME
 savefigs = false
 # place to save plots to 
 outdir = dirname(Base.source_path())*"/poster_graphs/"
@@ -77,7 +77,7 @@ display(nutrients_plot)
 # pro 
 pro = ds["TRAC21"]
 pro_plot = plot(pro[1,1,1,:], title="Prochlorococcus", legend=false, xlabel="weeks", ylabel=pro.attrib["units"])
-plot!(pro_plot, size=(500,500))
+#plot!(pro_plot, size=(500,500))
 display(pro_plot)
 
 # pro pred
@@ -160,26 +160,26 @@ if savefigs
 
 end
 
-# sunlight
-# load nc file into ds 
-folder = "/Users/birdy/Documents/eaps_research/darwin3/verification/darwin-single-box/run"
-rundir = joinpath(folder, config_id, "run")
-glob_dir = joinpath(rundir, data_folder)
-alldata = glob("par*.nc", glob_dir)
-par_ds = Dataset(alldata)
+# # sunlight
+# # load nc file into ds 
+# folder = "/Users/birdy/Documents/eaps_research/darwin3/verification/darwin-single-box/run"
+# rundir = joinpath(folder, config_id, "run")
+# glob_dir = joinpath(rundir, data_folder)
+# alldata = glob("par*.nc", glob_dir)
+# par_ds = Dataset(alldata)
 
-plots = Vector{Plots.plot}
-p = plot()
-p2 = plot()
-for variable in collect(keys(par_ds))
-    if occursin("PAR", variable)
-        #plot on same plot 
-        plot!(p, par_ds[variable][1,1,1,:], label=variable, title="PARs")
-        #append!(plots, p)
-    elseif occursin("E", variable)
-        plot!(p2, par_ds[variable][1,1,1,:], label=variable, title="radtran settings")
-    end
-end
+# plots = Vector{Plots.plot}
+# p = plot()
+# p2 = plot()
+# for variable in collect(keys(par_ds))
+#     if occursin("PAR", variable)
+#         #plot on same plot 
+#         plot!(p, par_ds[variable][1,1,1,:], label=variable, title="PARs")
+#         #append!(plots, p)
+#     elseif occursin("E", variable)
+#         plot!(p2, par_ds[variable][1,1,1,:], label=variable, title="radtran settings")
+#     end
+# end
 # display(p)
 # display(p2)
 
@@ -190,7 +190,7 @@ rundir = joinpath(folder, config_id, "run")
 glob_dir = joinpath(rundir, data_folder)
 alldata = glob("PC*.nc", glob_dir)
 pc_ds = Dataset(alldata)
-pc_plot = plot(pc_ds["PC0001"][1, 1, 1, :], title=pc_ds["PC0001"].attrib["description"], legend=false, xlabel="weeks", ylabel=pc_ds["PC0001"].attrib["units"])
+pc_plot = plot(pc_ds["PC0001"][1, 1, 1, :], title=pc_ds["PC0001"].attrib["description"], legend=false, xlabel="weeks", ylabel=pc_ds["PC0001"].attrib["units"], titlefontsize=10)
 # temp (sanity check)
 # temperature_data = glob("tave*.nc", glob_dir)
 # temp_ds = Dataset(temperature_data)
