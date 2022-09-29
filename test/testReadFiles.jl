@@ -9,8 +9,6 @@ using OrderedCollections
 # read in file thats in /input/
 folder  = "/Users/birdy/Documents/eaps_research/darwin3/verification/darwin-single-box/input"
 
-
-
 # read_namelist test eedata
 file = "eedata"
 fil = joinpath(folder, file)
@@ -50,9 +48,6 @@ println("write_namelist result: ")
 println(res)
 
 @test 'D' in res
-
-# mock nml
-# nml = MITgcm_namelist(groups=Symbol.(["EEPARMS"]), params=fill(OrderedDict(), length(1)))
 
 
 

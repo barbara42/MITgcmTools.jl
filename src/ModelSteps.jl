@@ -66,6 +66,7 @@ code files, headers, etc  in the `build/` folder before compiling the model
 """
 function build(config::MITgcm_config)
     nam=config.configuration
+    # what was this originally in a try? 
     try
         pth=pwd()
     catch e
@@ -73,40 +74,19 @@ function build(config::MITgcm_config)
     end
     pth=pwd()
     build_dir = joinpath(MITgcm_path[1], "verification", nam, "build")
-    #cd("$(MITgcm_path[1])/verification/$(nam)/build")
     cd(build_dir)
     println("BUILD Current Dir: ", build_dir)
     println("Building with genmake2...")
+    # TODO: do not suppress? proper error message 
     @suppress run(`../../../tools/genmake2 -mods=../code`) #$ext
     println("Genmake2 build done.")
     @suppress run(`make clean`)
-    println("b")
     println("Running make depend...")
     @suppress run(`make depend`)
     println("Make depend done.")
-    println("c")
     println("Running make -j 4")
     run(`make -j 4`)
     println("Make done! SUCCESSFUL BUILD!")
-
-    # DO NOT want to wrap this in a try. FAIL FAST MTHFKR
-    # try
-    #     # TODO: how to dynamically pass in 'of' instead of hard coding?
-    #     #@suppress run(`../../../tools/genmake2 -mods=../code -of=../../../tools/build_options/darwin_amd64_gfortran`) #$ext
-    #     run(`../../../tools/genmake2 -mods=../code`) #$ext
-    #     println("a")
-    #     run(`make clean`)
-    #     println("b")
-    #     run(`make depend`)
-    #     println("c")
-    #     run(`make -j 4`)
-    #     # TODO: this make is failing for some reason????? 
-    #     # @suppress run(`make`)
-    #     println("d")
-    # catch e
-    #     println("this is where the model fails ")
-    #     println("model compilation may have failed")
-    # end
     cd(pth)
     return true
 end
@@ -167,7 +147,6 @@ Call `ClimateModels.git_log_init(config)` to setup git tracker and
 (part of the climate model interface as specialized for `MITgcm`)
 """
 function setup(config::MITgcm_config)
-    # note: folder = "/Users/birdy/Documents/eaps_research/darwin3/verification/darwin-single-box/run"
     !isdir(joinpath(config.folder)) ? mkdir(joinpath(config.folder)) : nothing
     !isdir(joinpath(config.folder,string(config.ID))) ? mkdir(joinpath(config.folder,string(config.ID))) : nothing
 
@@ -183,7 +162,8 @@ function setup(config::MITgcm_config)
         [symlink(joinpath(p,f[i]),joinpath(pth_run,f[i])) for i in 1:length(f)]
     end
 
-    # links data* files in /run/UUID/run to /darwin-sinle-box/input .... but they end up linked to log/tracked_parameters ? 
+    # links data* files in /run/UUID/run to /darwin-sinle-box/input 
+    # .... but they end up linked to log/tracked_parameters ? 
     p="$(MITgcm_path[1])/verification/$(config.configuration)/input"
     tmpA=readdir(p)
     f=tmpA[findall([!isfile(joinpath(pth_run,tmpA[i])) for i in 1:length(tmpA)])]
@@ -283,11 +263,8 @@ function setup(config::MITgcm_config)
 
         params=OrderedDict()
         for fil in nmlfiles
-            io = open(joinpath(pth_run,fil), "r")
             nml=read_namelist(joinpath(pth_run,fil))
-
             write(joinpath(pth_log,fil),nml)            
-
             ni=length(nml.groups); tmp1=OrderedDict()
             [push!(tmp1,(nml.groups[i] => nml.params[i])) for i in 1:ni]
             tmp2=""
@@ -332,11 +309,9 @@ function MITgcm_launch(config::MITgcm_config)
     end
     pth=pwd()
     cd(joinpath(config.folder,string(config.ID),"run"))
-
     tmp=["STOP NORMAL END"]
     try
         println("launching in ModelSteps!")
-        #@suppress run(pipeline(`./mitgcmuv`,"output.txt"))
         run(pipeline(`./mitgcmuv`,"output.txt"))
         println("run did not fail!!!!! ")
     catch e

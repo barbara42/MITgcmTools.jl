@@ -384,14 +384,14 @@ namelist=read_namelist(fil)
 function read_namelist(fil)
 
     meta = read(fil,String)
-
     # extract parameters from meta. Assumes specific format 
     meta = split(meta,"\n")
     # get rid of empty lines
     meta = meta[findall((!isempty).(meta))]
     # get rid of comments
     meta = meta[findall(first.(meta).!=='#')]
-    groups = meta[findall(occursin.('&',meta) .& (length.(strip.(meta)) .> 1))] # groups of params start with a & 
+    # groups of params start with a &
+    groups = meta[findall(occursin.('&',meta) .& (length.(strip.(meta)) .> 1))]  
     
     # remove whitespace and & 
     trimmed_groups = []
@@ -512,7 +512,7 @@ function write_namelist(fil,namelist)
             y=missing
             isa(x,Bool)&&x==true ? y=".TRUE." : nothing
             isa(x,Bool)&&x==false ? y=".FALSE." : nothing
-            # if x is an array, and it is filled with all AbstractStrings AND non of the elements contain *
+            # if x is an array, and it is filled with all AbstractStrings AND none of the elements contain *
             # this is so we don't put quotes around lists that contain *
             write_quotes = true
             if isa(x,Array)&&(eltype(x)<:AbstractString)
